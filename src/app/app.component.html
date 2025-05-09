@@ -1,0 +1,135 @@
+@if(switchingForms === 'feedbackForm'){
+  <div class="container" >
+    <div class="header">
+    <div class="header-filter">
+      <div class="header-polygon">
+      <p class="header-font">Напишите нам</p>
+      </div>
+    </div>   
+    </div>
+
+    <form name="feedbackForm" (ngSubmit)="submitFeedbackForm()" [formGroup]="feedbackForm">
+        <div class="form-item">
+            <label for="name">Ваше имя:</label>          
+              <input class="feedback-input" type="text" id="name" name="name" required autocomplete="-"
+                formControlName = "nameEventControl">                       
+        </div>
+        <div class="form-item">
+          <label></label>
+            @if (feedbackForm.controls.nameEventControl.invalid && feedbackForm.controls.nameEventControl.touched) {
+              <span class="error-message">Имя не может быть пустым!</span>
+            }            
+        </div>
+        
+        <div class="form-item">
+            <label for="email">Ваш Email:</label>
+            <input class="feedback-input" type="email" id="email" name="email" required autocomplete="-"
+              formControlName = "emailEventControl">          
+        </div>
+        <div class="form-item">
+          <label></label>
+            @if (feedbackForm.controls.emailEventControl.invalid && feedbackForm.controls.emailEventControl.touched) {
+              <span class="error-message">Не корректный адрес електронной почты!</span>
+            }            
+        </div>
+        
+        <div class="form-item">
+            <label for="phone">Ваш телефон:</label> 
+            <input class="feedback-input" type="tel" id="phone" name="phone" required autocomplete="-"
+              formControlName = "phoneEventControl" [appMaskInput]="'+0(000)000-00-00'">          
+        </div>
+        <div class="form-item">
+          <label></label>
+            @if (feedbackForm.controls.phoneEventControl.invalid && feedbackForm.controls.phoneEventControl.touched) {
+              <span class="error-message">Неверно введён номер телефона!</span>
+            }            
+        </div>
+        
+        <div class="form-item">
+            <label for="topic">Тема:</label>
+            <select class="feedback-input" id="topic" name="topic" 
+              formControlName = "topicEventControl">
+              <option disabled selected value style="display:none"> -- выберите тему обращения -- </option>
+              @if(topics$ | async; as topics){             
+                @for (topic of topics; track $index) {
+                  <option>{{topic.topic}}</option>
+                }              
+              }              
+            </select>
+        </div>
+        <div class="form-item">
+          <label></label>
+            @if (feedbackForm.controls.topicEventControl.invalid && feedbackForm.controls.topicEventControl.touched) {
+              <span class="error-message">Тема сообщения отсутствует!</span>
+            }            
+        </div>
+        
+        <div class="form-item">
+            <label for="message">Ваше сообщение:</label>
+            <textarea class="feedback-input" id="message" name="message" required
+              formControlName = "messageEventControl"></textarea>
+        </div>
+        <div class="form-item">
+          <label></label>
+            @if (feedbackForm.controls.messageEventControl.invalid && feedbackForm.controls.messageEventControl.touched) {
+              <span class="error-message">Содержимое сообщения отсутствует!</span>
+            }            
+        </div>
+
+        @if((captcha$ | async); as captcha) {
+          <div class="form-item">
+              <label for="captcha">Цифры:</label>
+              <input  class="feedback-input" type="text" id="captcha" name="captcha" required
+                formControlName = "captchaEventControl">
+              <img   src="{{captcha.captchaImage}}" alt="CAPTCHA">
+              <input style="display: none" id="captchaId" type="text"  [value]=captcha.id>
+          </div>
+        }        
+        <div  class="form-item">
+          <label></label>
+          @if (feedbackForm.controls.captchaEventControl.invalid && feedbackForm.controls.captchaEventControl.touched) {
+            <span class="error-message">Ошибочное значение!</span>
+          }        
+        </div>
+        
+        <div class="form-item">
+            <label></label>
+            <button type="submit" >Отправить письмо!</button>
+        </div>
+        
+    </form>
+  </div>
+}
+@if(switchingForms === 'messageForm') {
+  <div class="container" >
+    <div class="header">
+    <div class="header-filter">
+      <div class="header-polygon">
+       <p class="header-font">Ваше обращение</p>
+      </div>
+     </div>   
+    </div>
+
+    
+      <form name="messageForm" (ngSubmit)="submitMessageForm()">          
+          <div class="form-item">
+              <label for="topic">Тема:</label>
+              <input id="topic" class="message" name="topic" type="text" readonly value="{{message?.topic}}">            
+          </div>        
+          
+          <div class="form-item">
+              <label for="message">Ваше сообщение:</label>
+              <textarea id="message" class="message" name="message" readonly>{{message?.message}}
+              </textarea>
+          </div>               
+                  
+          <div class="form-item">
+              <label></label>
+              <button type="submit">Хорошо</button>
+          </div>          
+      </form>
+    
+  </div>
+}
+
+<router-outlet></router-outlet>
